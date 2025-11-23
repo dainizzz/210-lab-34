@@ -9,113 +9,122 @@ using namespace std;
 
 const int SIZE = 11;
 
-struct Edge {
-	int src, dest, weight;
+// A lookup table so airport 0 = "ATL", 1 = "LAX", etc.
+// You can change these to any airports you want.
+vector<string> airports = {
+    "ATL", "LAX", "ORD", "DFW", "DEN",
+    "JFK", "SEA", "MIA", "PHX", "CLT", "BOS"
 };
 
-typedef pair<int, int> Pair; // Creates alias 'Pair' for the pair<int,int> data type
+struct Edge {
+    int src, dest, weight;  // weight = ticket cost
+};
+
+typedef pair<int, int> Pair;
 
 class Graph {
 public:
-	vector<vector<Pair> > adjList;
+    vector<vector<Pair>> adjList;
 
-	Graph(vector<Edge> const &edges) {
-		adjList.resize(SIZE);
-		for (auto &edge: edges) {
-			int src = edge.src;
-			int dest = edge.dest;
-			int weight = edge.weight;
+    Graph(vector<Edge> const &edges) {
+        adjList.resize(SIZE);
+        for (auto &edge : edges) {
+            int src = edge.src;
+            int dest = edge.dest;
+            int weight = edge.weight;
 
-			adjList[src].push_back(make_pair(dest, weight));
-			adjList[dest].push_back(make_pair(src, weight)); // undirected
-		}
-	}
+            adjList[src].push_back(make_pair(dest, weight));
+            adjList[dest].push_back(make_pair(src, weight)); // undirected flights
+        }
+    }
 
-	// Print adjacency list
-	void printGraph() {
-		cout << "Graph's adjacency list:" << endl;
-		for (int i = 0; i < adjList.size(); i++) {
-			cout << i << " --> ";
-			for (Pair v: adjList[i])
-				cout << "(" << v.first << ", " << v.second << ") ";
-			cout << endl;
-		}
-	}
+    // Print adjacency list
+    void printGraph() {
+        cout << "\nAvailable Flights (Airport → (Destination, Ticket Cost)):\n";
+        for (int i = 0; i < adjList.size(); i++) {
+            cout << airports[i] << " --> ";
+            for (Pair v : adjList[i]) {
+                cout << "(" << airports[v.first] << ", $" << v.second << ") ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
 
-	// ---- DEPTH FIRST SEARCH ----
-	void DFS(int start) {
-		vector<bool> visited(SIZE, false);
-		stack<int> st;
+    // ---- ITERATIVE DEPTH FIRST SEARCH ----
+    void DFS(int start) {
+        vector<bool> visited(SIZE, false);
+        stack<int> st;
 
-		st.push(start);
+        st.push(start);
 
-		cout << "DFS starting from vertex" << start << ":" << endl;
+        cout << "DFS starting from " << airports[start] << ":\n";
 
-		while (!st.empty()) {
-			int v = st.top();
-			st.pop();
+        while (!st.empty()) {
+            int v = st.top();
+            st.pop();
 
-			if (!visited[v]) {
-				cout << v << " ";
-				visited[v] = true;
+            if (!visited[v]) {
+                cout << airports[v] << " ";
+                visited[v] = true;
 
-				// Push neighbors in the original order
-				for (auto &p: adjList[v]) {
-					int neighbor = p.first;
-					if (!visited[neighbor]) {
-						st.push(neighbor);
-					}
-				}
-			}
-		}
+                // Push neighbors
+                for (auto &p : adjList[v]) {
+                    int neighbor = p.first;
+                    if (!visited[neighbor]) {
+                        st.push(neighbor);
+                    }
+                }
+            }
+        }
 
-		cout << endl;
-	}
+        cout << "\n\n";
+    }
 
+    // ---- BREADTH FIRST SEARCH ----
+    void BFS(int start) {
+        vector<bool> visited(SIZE, false);
+        queue<int> q;
 
-	// ---- BREADTH FIRST SEARCH ----
-	void BFS(int start) {
-		vector<bool> visited(SIZE, false);
-		queue<int> q;
+        visited[start] = true;
+        q.push(start);
 
-		visited[start] = true;
-		q.push(start);
+        cout << "BFS starting from " << airports[start] << ":\n";
 
-		cout << "BFS starting from vertex " << start << ":" << endl;
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop();
+            cout << airports[v] << " ";
 
-		while (!q.empty()) {
-			int v = q.front();
-			q.pop();
-			cout << v << " ";
+            for (auto &p : adjList[v]) {
+                int neighbor = p.first;
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.push(neighbor);
+                }
+            }
+        }
 
-			// Visit neighbors
-			for (auto &p: adjList[v]) {
-				int neighbor = p.first;
-				if (!visited[neighbor]) {
-					visited[neighbor] = true;
-					q.push(neighbor);
-				}
-			}
-		}
-		cout << endl;
-	}
+        cout << "\n\n";
+    }
 };
 
 
 int main() {
-	vector<Edge> edges = {
-		{0, 1, 2}, {0, 2, 7}, {0, 3, 1},
-		{1, 5, 3}, {2, 3, 10},{2, 4, 8}, {2, 6, 5},
-		{4, 7, 4}, {6, 7, 3}, {6, 8, 15},
-		{7, 9, 6}, {9, 10, 9}
-	};
+    // Each edge = (origin airport, destination airport, ticket cost)
+    vector<Edge> edges = {
+        {0, 1, 200}, {0, 2, 350}, {0, 3, 180},
+        {1, 5, 220}, {2, 3, 300}, {2, 4, 250}, {2, 6, 400},
+        {4, 7, 150}, {6, 7, 275}, {6, 8, 450},
+        {7, 9, 175}, {9, 10, 320}
+    };
 
-	Graph graph(edges);
+    Graph graph(edges);
 
-	graph.printGraph();
+    graph.printGraph();
 
-	graph.DFS(0); // start DFS at node 0
-	graph.BFS(0); // start BFS at node 0
+    graph.DFS(0); // Start DFS from ATL
+    graph.BFS(0); // Start BFS from ATL
 
-	return 0;
+    return 0;
 }
