@@ -5,7 +5,6 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <stack>
 using namespace std;
 
 const int SIZE = 11;
@@ -223,8 +222,14 @@ private:
 	}
 };
 
-int airportIndex(const string &);
+// airportIndex() converts a string into the corresponding index value in the AIRPORTS vector.
+// arguments: a string airport name
+// output: the index that corresponds with the airport name
+int airportIndex(string);
 
+// menu() displays a menu and calls the member functions that correspond with the user's selection on the Graph object
+// arguments: a reference to a Graph object
+// output: nothing
 void menu(Graph &);
 
 int main() {
@@ -244,7 +249,7 @@ int main() {
 }
 
 // Convert airport code (string) to index
-int airportIndex(const string &code) {
+int airportIndex(string code) {
 	for (int i = 0; i < SIZE; i++) {
 		if (AIRPORTS[i] == code)
 			return i;
