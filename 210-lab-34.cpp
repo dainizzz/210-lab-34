@@ -103,10 +103,10 @@ public:
 
 
 int main() {
-	// TODO: Delete 5 and 6
+	// Deleted nodes 5 & 6, so starting numbering for new nodes at 7
 	vector<Edge> edges = {
-		{0, 1, 12}, {0, 2, 8}, {0, 3, 21}, {2, 3, 6}, {2, 6, 2},
-		{5, 6, 6}, {4, 5, 9}, {2, 4, 4}, {2, 5, 5}
+		{0, 1, 2}, {0, 2, 7}, {0, 3, 1},{1, 7, 3} ,{2, 3, 10},
+{2, 4, 8},{2, 8, 5}, {4, 9, 4}, {8, 9, 3}, {8, 10, 15},
 	};
 
 	Graph graph(edges);
