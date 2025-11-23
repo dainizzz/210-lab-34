@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stack>
 using namespace std;
 
 const int SIZE = 7;
@@ -42,25 +43,35 @@ public:
     }
 
     // ---- DEPTH FIRST SEARCH ----
-    void DFSUtil(int v, vector<bool> &visited) {
-        visited[v] = true;
-        cout << v << " ";
-
-        // Visit all neighbors
-        for (auto &p : adjList[v]) {
-            int neighbor = p.first;
-            if (!visited[neighbor]) {
-                DFSUtil(neighbor, visited);
-            }
-        }
-    }
-
     void DFS(int start) {
         vector<bool> visited(SIZE, false);
-        cout << "DFS traversal starting from " << start << ": ";
-        DFSUtil(start, visited);
+        stack<int> st;
+
+        st.push(start);
+
+        cout << "DFS starting from vertex " << start << ": ";
+
+        while (!st.empty()) {
+            int v = st.top();
+            st.pop();
+
+            if (!visited[v]) {
+                cout << v << " ";
+                visited[v] = true;
+
+                // Push neighbors onto the stack
+                // IMPORTANT: reverse iteration preserves similar order to recursive DFS
+                for (int i = adjList[v].size() - 1; i >= 0; i--) {
+                    int neighbor = adjList[v][i].first;
+                    if (!visited[neighbor]) {
+                        st.push(neighbor);
+                    }
+                }
+            }
+        }
         cout << endl;
     }
+
 
     // ---- BREADTH FIRST SEARCH ----
     void BFS(int start) {
@@ -70,7 +81,7 @@ public:
         visited[start] = true;
         q.push(start);
 
-        cout << "BFS traversal starting from " << start << ": ";
+        cout << "BFS starting from vertex " << start << ": ";
 
         while (!q.empty()) {
             int v = q.front();
