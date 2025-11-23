@@ -49,7 +49,7 @@ public:
 
         st.push(start);
 
-        cout << "DFS starting from vertex " << start << ": ";
+        cout << "DFS starting from vertex" << start << ":" << endl;
 
         while (!st.empty()) {
             int v = st.top();
@@ -59,18 +59,19 @@ public:
                 cout << v << " ";
                 visited[v] = true;
 
-                // Push neighbors onto the stack
-                // IMPORTANT: reverse iteration preserves similar order to recursive DFS
-                for (int i = adjList[v].size() - 1; i >= 0; i--) {
-                    int neighbor = adjList[v][i].first;
+                // Push neighbors in the original order
+                for (auto &p : adjList[v]) {
+                    int neighbor = p.first;
                     if (!visited[neighbor]) {
                         st.push(neighbor);
                     }
                 }
             }
         }
+
         cout << endl;
     }
+
 
 
     // ---- BREADTH FIRST SEARCH ----
@@ -81,7 +82,7 @@ public:
         visited[start] = true;
         q.push(start);
 
-        cout << "BFS starting from vertex " << start << ": ";
+        cout << "BFS starting from vertex " << start << ":" << endl;
 
         while (!q.empty()) {
             int v = q.front();
