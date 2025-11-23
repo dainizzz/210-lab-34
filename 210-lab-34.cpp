@@ -56,11 +56,9 @@ public:
         vector<int> dist(SIZE, -1);
         queue<int> q;
 
-
         visited[start] = true;
         dist[start] = 0;
         q.push(start);
-
 
         while (!q.empty()) {
             int v = q.front(); q.pop();
@@ -138,7 +136,6 @@ private:
         visited[current] = false;
     }
 };
-
 
 int main() {
     // Each edge = (origin airport, destination airport, ticket cost)
