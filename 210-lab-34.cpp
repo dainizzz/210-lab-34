@@ -10,7 +10,6 @@ using namespace std;
 const int SIZE = 11;
 
 // A lookup table so airport 0 = "ATL", 1 = "LAX", etc.
-// You can change these to any airports you want.
 vector<string> airports = {
     "ATL", "LAX", "ORD", "DFW", "DEN",
     "JFK", "SEA", "MIA", "PHX", "CLT", "BOS"
@@ -40,7 +39,7 @@ public:
 
     // Print adjacency list
     void printGraph() {
-        cout << "\nAvailable Flights (Airport → (Destination, Ticket Cost)):\n";
+        cout << "\nAvailable Flights (Airport --> (Destination, Ticket Cost)):\n";
         for (int i = 0; i < adjList.size(); i++) {
             cout << airports[i] << " --> ";
             for (Pair v : adjList[i]) {
@@ -124,6 +123,7 @@ int main() {
     graph.printGraph();
 
     graph.DFS(0); // Start DFS from ATL
+
     graph.BFS(0); // Start BFS from ATL
 
     return 0;
