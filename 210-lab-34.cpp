@@ -80,30 +80,36 @@ public:
         cout << "\n\n";
     }
 
-    // ---- BREADTH FIRST SEARCH ----
-    void BFS(int start) {
+
+
+    // BFS for minimum layovers
+    void minimumLayovers(int start, int dest) {
         vector<bool> visited(SIZE, false);
+        vector<int> dist(SIZE, -1);
         queue<int> q;
 
+
         visited[start] = true;
+        dist[start] = 0;
         q.push(start);
 
-        cout << "BFS starting from " << airports[start] << ":\n";
 
         while (!q.empty()) {
-            int v = q.front();
-            q.pop();
-            cout << airports[v] << " ";
-
+            int v = q.front(); q.pop();
             for (auto &p : adjList[v]) {
                 int neighbor = p.first;
                 if (!visited[neighbor]) {
                     visited[neighbor] = true;
+                    dist[neighbor] = dist[v] + 1;
                     q.push(neighbor);
                 }
             }
         }
 
+
+        cout << "\nMinimum layovers from " << airports[start] << " to " << airports[dest] << ": ";
+        if (dist[dest] == -1) cout << "No route available.";
+        else cout << dist[dest] << " layovers.";
         cout << "\n\n";
     }
 };
@@ -122,9 +128,10 @@ int main() {
 
     graph.printGraph();
 
+    cout << "Exploring possible flight paths from ATL..." << endl;
     graph.DFS(0); // Start DFS from ATL
-
-    graph.BFS(0); // Start BFS from ATL
+    cout << "Exploring flights with the fewest layovers (BFS) from ATL to BOS..." << endl;
+    graph.minimumLayovers(0,10); // Start BFS from ATL
 
     return 0;
 }
