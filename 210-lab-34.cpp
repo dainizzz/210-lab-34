@@ -1,6 +1,7 @@
 // COMSC-210 | Lab 34 | Dainiz Almazan
 // IDE used: CLion
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -103,6 +104,52 @@ public:
         cout << "\n\n";
     }
 
+    // Dijkstra for cheapest route (shortest path)
+    void cheapestRoutesFrom(int start) {
+        const int INF = 1e9;
+        vector<int> cost(SIZE, INF), parent(SIZE, -1);
+        priority_queue<Pair, vector<Pair>, greater<Pair>> pq;
+
+        cost[start] = 0;
+        pq.push({0, start});
+
+        while (!pq.empty()) {
+            auto [c, u] = pq.top(); pq.pop();
+            if (c > cost[u]) continue;
+
+            for (auto &p : adjList[u]) {
+                int v = p.first, w = p.second;
+                if (cost[u] + w < cost[v]) {
+                    cost[v] = cost[u] + w;
+                    parent[v] = u;
+                    pq.push({cost[v], v});
+                }
+            }
+        }
+
+        cout << "Cheapest routes from " << airports[start] << ":" << endl;
+        for (int dest = 0; dest < SIZE; dest++) {
+            if (dest == start) continue;
+
+            if (cost[dest] >= INF) {
+                cout << "No route to " << airports[dest] << endl;
+                continue;
+            }
+
+            vector<int> path;
+            for (int v = dest; v != -1; v = parent[v]) path.push_back(v);
+            reverse(path.begin(), path.end());
+
+            cout << airports[start] << " --> " << airports[dest] << " : $" << cost[dest] << " ( ";
+            for (int i = 0; i < path.size(); i++) {
+                cout << airports[path[i]];
+                if (i < path.size()-1) cout << " --> ";
+            }
+            cout << " )" << endl;
+            }
+        cout << endl;
+        }
+
     // DFS: list all possible paths from source to destination
     void findAllPaths(int start, int dest) {
         vector<bool> visited(SIZE, false);
@@ -154,6 +201,9 @@ int main() {
     graph.findAllPaths(0, 10); // Start DFS from ATL
     cout << "Finding all reachable airports (BFS) from ATL..." << endl;
     graph.reachableAirports(0); // Start BFS from ATL
+
+    cout << "Finding the cheapest flights (shortest path) from ATL to each aiport..." << endl;
+    graph.cheapestRoutesFrom(0);
 
     return 0;
 }
