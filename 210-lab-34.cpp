@@ -159,6 +159,44 @@ public:
         cout << "\n";
         }
 
+    // Minimum Spanning Tree (Prim's Algorithm)
+    void minimumSpanningTree() {
+        const int INF = 1e9;
+        vector<int> key(SIZE, INF);
+        vector<int> parent(SIZE, -1);
+        vector<bool> inMST(SIZE, false);
+
+        key[0] = 0;
+
+        for (int count = 0; count < SIZE - 1; count++) {
+            int u = -1;
+            for (int i = 0; i < SIZE; i++)
+                if (!inMST[i] && (u == -1 || key[i] < key[u]))
+                    u = i;
+
+            inMST[u] = true;
+
+            for (auto &p : adjList[u]) {
+                int v = p.first, w = p.second;
+                if (!inMST[v] && w < key[v]) {
+                    key[v] = w;
+                    parent[v] = u;
+                }
+            }
+        }
+
+        cout << "Minimum Spanning Tree:" << endl;
+        int total = 0;
+        for (int i = 1; i < SIZE; i++) {
+            if (parent[i] != -1) {
+                cout << airports[parent[i]] << " -- " << airports[i]
+                << " ($" << key[i] << ")" << endl;
+                total += key[i];
+            }
+        }
+        cout << "Total MST Cost: $" << total << endl;
+    }
+
 private:
     void dfsAllPathsUtil(int current, int dest, vector<bool> &visited, vector<int> &path) {
         visited[current] = true;
@@ -204,6 +242,8 @@ int main() {
 
     cout << "Finding the cheapest flights (shortest path) from ATL to each aiport..." << endl;
     graph.cheapestRoutesFrom(0);
+
+    graph.minimumSpanningTree();
 
     return 0;
 }
