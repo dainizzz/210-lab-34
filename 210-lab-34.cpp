@@ -50,38 +50,6 @@ public:
         cout << endl;
     }
 
-    // ---- ITERATIVE DEPTH FIRST SEARCH ----
-    void DFS(int start) {
-        vector<bool> visited(SIZE, false);
-        stack<int> st;
-
-        st.push(start);
-
-        cout << "DFS starting from " << airports[start] << ":\n";
-
-        while (!st.empty()) {
-            int v = st.top();
-            st.pop();
-
-            if (!visited[v]) {
-                cout << airports[v] << " ";
-                visited[v] = true;
-
-                // Push neighbors
-                for (auto &p : adjList[v]) {
-                    int neighbor = p.first;
-                    if (!visited[neighbor]) {
-                        st.push(neighbor);
-                    }
-                }
-            }
-        }
-
-        cout << "\n\n";
-    }
-
-
-
     // BFS for minimum layovers
     void minimumLayovers(int start, int dest) {
         vector<bool> visited(SIZE, false);
@@ -112,6 +80,63 @@ public:
         else cout << dist[dest] << " layovers.";
         cout << "\n\n";
     }
+
+    // BFS: List all reachable airports
+    void reachableAirports(int start) {
+        vector<bool> visited(SIZE, false);
+        queue<int> q;
+        visited[start] = true;
+        q.push(start);
+
+
+        cout << "Reachable airports from " << airports[start] << ":\n";
+        while (!q.empty()) {
+            int v = q.front(); q.pop();
+            cout << airports[v] << " ";
+
+
+            for (auto &p : adjList[v]) {
+                if (!visited[p.first]) {
+                    visited[p.first] = true;
+                    q.push(p.first);
+                }
+            }
+        }
+        cout << "\n\n";
+    }
+
+    // DFS: list all possible paths from source to destination
+    void findAllPaths(int start, int dest) {
+        vector<bool> visited(SIZE, false);
+        vector<int> path;
+        cout << "All possible paths from " << airports[start] << " to " << airports[dest] << ":" << endl;
+        dfsAllPathsUtil(start, dest, visited, path);
+        cout << "\n";
+        }
+
+private:
+    void dfsAllPathsUtil(int current, int dest, vector<bool> &visited, vector<int> &path) {
+        visited[current] = true;
+        path.push_back(current);
+
+        if (current == dest) {
+            for (int i = 0; i < path.size(); i++) {
+                cout << airports[path[i]];
+                if (i < path.size() - 1) cout << " --> ";
+            }
+            cout << endl;
+            } else {
+                for (auto &p : adjList[current]) {
+                    int neighbor = p.first;
+                    if (!visited[neighbor]) {
+                        dfsAllPathsUtil(neighbor, dest, visited, path);
+                    }
+                }
+            }
+
+        path.pop_back();
+        visited[current] = false;
+    }
 };
 
 
@@ -128,10 +153,10 @@ int main() {
 
     graph.printGraph();
 
-    cout << "Exploring possible flight paths from ATL..." << endl;
-    graph.DFS(0); // Start DFS from ATL
-    cout << "Exploring flights with the fewest layovers (BFS) from ATL to BOS..." << endl;
-    graph.minimumLayovers(0,10); // Start BFS from ATL
+    cout << "Exploring all possible flight paths (DFS) from ATL to BOS..." << endl;
+    graph.findAllPaths(0, 10); // Start DFS from ATL
+    cout << "Finding all reachable airports (BFS) from ATL..." << endl;
+    graph.reachableAirports(0); // Start BFS from ATL
 
     return 0;
 }
