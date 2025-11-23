@@ -257,7 +257,7 @@ void menu(Graph &graph) {
 	while (true) {
 		cout << "===== Airline Route System =====" << endl;
 		cout << "1. Show all flights" << endl;
-		cout << "2. Get cheapest routes from one airport to all other airports" << endl;
+		cout << "2. Get cheapest route from one airport to other airports" << endl;
 		cout << "3. Get minimum number of layovers between two airports (BFS)" << endl;
 		cout << "4. List reachable airports from an airport (BFS)" << endl;
 		cout << "5. List ALL possible paths between two airports (DFS)" << endl;
@@ -287,9 +287,11 @@ void menu(Graph &graph) {
 				graph.cheapestRoutesFrom(a);
 				break;
 			case 3:
-				cout << "Enter source and destination: "; {
+				cout << "Enter source: "; {
 					string src, dst;
-					cin >> src >> dst;
+					cin >> src;
+					cout << "Enter destination: ";
+					cin >> dst;
 					a = airportIndex(src);
 					b = airportIndex(dst);
 					if (a == -1 || b == -1) {
@@ -312,8 +314,18 @@ void menu(Graph &graph) {
 				graph.reachableAirports(a);
 				break;
 			case 5:
-				cout << "Enter source and destination: ";
-				cin >> a >> b;
+				cout << "Enter source: "; {
+					string src, dst;
+					cin >> src;
+					cout << "Enter destination: ";
+					cin >> dst;
+					a = airportIndex(src);
+					b = airportIndex(dst);
+					if (a == -1 || b == -1) {
+						cout << "Invalid airport code." << endl;
+						break;
+					}
+				};
 				graph.findAllPaths(a, b);
 				break;
 			case 6:
