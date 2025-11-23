@@ -222,6 +222,57 @@ private:
     }
 };
 
+// Menu
+void menu(Graph &graph) {
+    while (true) {
+        cout << "===== Airline Route System =====" << endl;
+        cout << "1. Show all flights" << endl;
+        cout << "2. Cheapest routes from an airport to all airports" << endl;
+        cout << "3. Minimum layovers between airports" << endl;
+        cout << "4. List reachable airports from a hub" << endl;
+        cout << "5. List ALL possible paths between two airports (DFS)" << endl;
+        cout << "6. Minimum Spanning Tree (MST)" << endl;
+        cout << "7. Exit" << endl;
+        cout << "Choose an option: ";
+
+        int choice;
+        cin >> choice;
+        if (choice == 7) break;
+
+        int a, b;
+        switch (choice) {
+            case 1:
+                graph.printGraph();
+                break;
+            case 2:
+                cout << "Enter source airport (0-10): ";
+                cin >> a;
+                graph.cheapestRoutesFrom(a);
+                break;
+            case 3:
+                cout << "Enter source and destination (0-10): ";
+                cin >> a >> b;
+                graph.minimumLayovers(a, b);
+                break;
+            case 4:
+                cout << "Enter hub airport (0-10): ";
+                cin >> a;
+                graph.reachableAirports(a);
+                break;
+            case 5:
+                cout << "Enter source and destination (0-10): ";
+                cin >> a >> b;
+                graph.findAllPaths(a, b);
+                break;
+            case 6:
+                graph.minimumSpanningTree();
+                break;
+            default:
+                cout << "Invalid choice." << endl;
+        }
+    }
+}
+
 int main() {
     // Each edge = (origin airport, destination airport, ticket cost)
     vector<Edge> edges = {
@@ -233,17 +284,7 @@ int main() {
 
     Graph graph(edges);
 
-    graph.printGraph();
-
-    cout << "Exploring all possible flight paths (DFS) from ATL to BOS..." << endl;
-    graph.findAllPaths(0, 10); // Start DFS from ATL
-    cout << "Finding all reachable airports (BFS) from ATL..." << endl;
-    graph.reachableAirports(0); // Start BFS from ATL
-
-    cout << "Finding the cheapest flights (shortest path) from ATL to each aiport..." << endl;
-    graph.cheapestRoutesFrom(0);
-
-    graph.minimumSpanningTree();
+    menu(graph);
 
     return 0;
 }
