@@ -114,7 +114,6 @@ int main() {
 
 	graph.printGraph();
 
-	cout << endl;
 	graph.DFS(0); // start DFS at node 0
 	graph.BFS(0); // start BFS at node 0
 
